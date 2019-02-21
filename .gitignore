@@ -1,0 +1,10 @@
+/public/contents/
+/public/index.html
+/vendor/
+/composer.lock
+./config.php
+/public/uploads
+/storage/
+/tmp/
+/excel/
+/test/
