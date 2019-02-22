@@ -6,15 +6,24 @@ class IndexController
     public function index()
     {
         $data = new \models\Blog;
-        $d = $data->index(1);
-        $b='tom';
+        $d = $data->index();
 
         view('index.index',['data'=>$d]);
     }
 
-    public function hello()
+    //生成静态页
+    public function jthtml()
     {
-        echo 'hello';
+        
+        $data = new \models\Blog;
+        $data->contenthtml();
+    }
+
+    public function delhtml()
+    {
+        $data = new \models\Blog;
+        $data->delFile();
+  
     }
 }
 ?>

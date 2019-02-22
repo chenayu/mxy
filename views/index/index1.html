@@ -1,0 +1,10 @@
+<?php view('common.nav'); ?>    
+        <i class="material-icons md-48">face</i>
+        <i class="material-icons">&#xE87C;</i>
+    <?php foreach($data as $v): ?>
+    
+    <a href="./contents/<?=$v['id']?>.html"><p><?=$v['title'] ?></p></a> 
+    
+    <?php endforeach; ?>
+
+<?php view('common.footer'); ?>
