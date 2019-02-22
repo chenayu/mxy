@@ -26,4 +26,9 @@ function view($viewFileName, $data = [])
     require(ROOT . 'views/' . $path);
 }
 
+function error($info)
+{
+    echo  $info;
+}
+
 ?>
