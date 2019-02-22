@@ -8,10 +8,6 @@ class Blog extends Base
     {
        $stmt = self::$pdo->prepare('SELECT left(content,50) as content,title,created_at FROM articles limit 10');
        $stmt->execute();
-    //    $blog = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //    echo '<pre>';
-    //    var_dump($blog);
-    //    exit;
        return $blog = $stmt->fetchAll(PDO::FETCH_ASSOC);
        
     }

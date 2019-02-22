@@ -5,7 +5,9 @@ class IndexController
 {
     public function index()
     {
-        echo 123;
+        
+  
+        view('admin.index.index');
     }
 }
 

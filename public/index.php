@@ -17,7 +17,6 @@ require(ROOT.'libs/functions.php');
 
 if($_SERVER['REQUEST_URI']!=='/')
 {
- 
     $pathInfo = $_SERVER['REQUEST_URI'];
     //根据/拆分为数组
     $pathInfo = explode('/',$pathInfo);
@@ -41,8 +40,6 @@ if($_SERVER['REQUEST_URI']!=='/')
 
         $fullController = 'controllers\\'.$controller;
     }
-
- 
     
 }else{
     //如果没有参数就给一个默认的
