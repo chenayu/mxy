@@ -7,7 +7,6 @@ class IndexController
     {
         $data = new \models\Blog;
         $d = $data->index();
-
         view('index.index',['data'=>$d]);
     }
 

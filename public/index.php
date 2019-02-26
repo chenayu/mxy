@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_URI']!=='/')
         {
             $action = $pathInfo[2];
         }else{
-            error('参数不正确');
+            error();
             exit;
         }
 
@@ -57,7 +57,7 @@ function autoload($class)
         require(ROOT.$path.'.php'); 
 
     }else{
-        error('访问的文件不存在');
+        error();
         exit;    
     }
 
@@ -67,13 +67,24 @@ spl_autoload_register('autoload');
 
 $c = new $fullController;
 
-//判断访问的方法是否存在
-if(method_exists($c,$action)){
-    $c->$action();
+$method = explode('?',$action);
+$ac= $method[0];
+
+if(method_exists($c,$ac)){
+
+	if(count($method)>1)
+	{
+		$id = $method[1];
+		$id = ltrim(strstr($id,"="),'=');
+		$c->$ac($id);
+	}else{
+		$c->$ac();
+	}
 }else{
-    //提示错误
-    error('方法不存在');
+	error();
 }
+
+
 
  
 

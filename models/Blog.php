@@ -9,7 +9,6 @@ class Blog extends Base
        $stmt = self::$pdo->prepare('SELECT left(content,50) as content,title,created_at FROM articles limit 10');
        $stmt->execute();
        return $blog = $stmt->fetchAll(PDO::FETCH_ASSOC);
-       
     }
 
     //生成静态页
