@@ -8,14 +8,16 @@
         </div>
         <div class="result-wrap">
             <div class="result-content">
-                <form action="/jscss/admin/design/add" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                <form action="/admin/blog/add" method="post" id="myform" name="myform" enctype="multipart/form-data">
                     <table class="insert-tab" width="100%">
                         <tbody><tr>
                             <th width="120"><i class="require-red">*</i>分类：</th>
                             <td>
-                                <select name="colId" id="catid" class="required">
-                                    <option value="">请选择</option>
-                                    <option value="19">精品界面</option><option value="20">推荐界面</option>
+                                <select name="type" id="catid" class="required">
+                                	<option value="">请选择</option>
+                                	<?php foreach($cat as $v): ?>
+                                    <option value="<?=$v['id']?>"><?=$v['cat_name']?></option>
+                                 <?php endforeach; ?>
                                 </select>
                             </td>
                         </tr>
@@ -26,16 +28,38 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>作者：</th>
-                                <td><input class="common-text" name="author" size="50" value="admin" type="text"></td>
+                                <th><i class="require-red">*</i>是否公开：</th>
+                                <td>
+                                    <input type="radio" name="is_show" value="0"/>隐藏
+                                    <input type="radio" name="is_show" value="1"/>公开
+                                </td>
+                            </tr>
+                            
+                              <tr>
+                                <th><i class="require-red">*</i>置顶：</th>
+                                <td>
+                                    <input type="checkbox" name="top" value='1'>置顶
+                                </td>
                             </tr>
                             <tr>
                                 <th><i class="require-red">*</i>缩略图：</th>
-                                <td><input name="smallimg" id="" type="file"><!--<input type="submit" onclick="submitForm('/jscss/admin/design/upload')" value="上传图片"/>--></td>
+                                <td><input name="img" type="file" class="preview">
+                                <!--<input type="submit" onclick="submitForm('/jscss/admin/design/upload')" value="上传图片"/>--></td>
                             </tr>
                             <tr>
                                 <th>内容：</th>
-                                <td><textarea name="content" class="common-textarea" id="content" cols="30" style="width: 98%;" rows="10"></textarea></td>
+                                <td>
+                                	<!--<textarea name="content" class="common-textarea" id="editor" cols="30" style="width: 98%;" rows="10">
+                                		
+                                	</textarea>-->
+                                	<textarea id="editor" name="content" placeholder="Balabala"></textarea>
+                                </td>
+                            </tr>
+                               <tr>
+                                <th><i class="require-red">*</i>标签 逗号隔开：</th>
+                                <td>
+                                    <input type="text" class="common-text required" size="50" name="tags" value=""/>
+                                </td>
                             </tr>
                             <tr>
                                 <th></th>
@@ -54,3 +78,59 @@
 </div>
 </body>
 </html>
+<script type="text/javascript" src="../../../js/img_preview.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../simditor-2.3.6/styles/simditor.css"/>
+<script type="text/javascript" src="../../../simditor-2.3.6/scripts/jquery.min.js"></script>
+<script type="text/javascript" src="../../../simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="../../../simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="../../../simditor-2.3.6/scripts/uploader.js"></script>
+<script type="text/javascript" src="../../../simditor-2.3.6/scripts/simditor.js"></script>
+<script>
+	//删除图片
+	  function del_attr(del)
+    {
+        var attr = $(del).parent();
+        attr.remove();
+    }
+	 //显示缩略图
+    $(".preview").change(function(){
+    var file = this.files[0];
+    var str = getObjectUrl(file);
+    $(this).prev('.img_preview').remove();
+    $(this).before("<div class='img_preview'><img src='"+str+"' width='120' height='120'><input onclick='del_attr(this)' type='button' value='删除'  class='btn btn-default'></div> ")
+});
+ 
+	
+	
+var editor = new Simditor({
+		  textarea: $('#editor'),
+		  toolbar:[
+					    'title',
+					    'bold',
+					    'italic',
+					    'underline',
+					    'strikethrough',
+					    'fontScale',
+					    'color',
+					    'ol'    ,       
+					    'ul'         ,
+					    'blockquote',
+					    'code'       ,
+					    'table',
+					    'link',
+					    'image',
+					    'hr'          , 
+					    'indent',
+					    'outdent',
+					    'alignment'
+					    ],
+                  upload:{
+			      url:'/admin/blog/uploads', 
+			      params:'null',
+			      fileKey:'img',
+			      connectionCount:3,
+			      leaveConfirm: '文件上传中，真要离开吗？'
+			  }
+        });
+
+				</script>

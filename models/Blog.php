@@ -6,9 +6,69 @@ class Blog extends Base
 {
     public function index()
     {
-       $stmt = self::$pdo->prepare('SELECT left(content,50) as content,title,created_at FROM articles limit 10');
+        // select * from articles a left join types b on a.type_id = b.id  
+        // $stmt = self::$pdo->prepare('SELECT left(content,50) as content,id,title,created_at FROM articles limit 10');
+       $stmt = self::$pdo->prepare('SELECT left(a.content,50) as content,
+            a.id,a.title,a.created_at,b.cat_name,is_show,top,a.img
+            FROM articles a LEFT JOIN types b ON a.type_id = b.id');
+
        $stmt->execute();
        return $blog = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    //添加
+    public function insert($type,$title,$content,$is_show,$top,$img,$tagsid)
+    {
+     $stmt = self::$pdo->prepare('INSERT INTO 
+        articles(title,content,created_at,updated_at,is_show,type_id,top,img,tags_id) 
+        VALUES(?,?,now(),now(),?,?,?,?,?)');
+     $st = $stmt->execute([
+         $title,$content,$is_show,$type,$top,$img,$tagsid
+     ]);
+
+     if($st){
+        return true;
+     }else{
+         //打印错误
+        var_dump($stmt->errorInfo());
+       
+     }
+     
+
+    }
+
+    //删除文章
+    public function delete($id)
+    {
+        //取出保存图片的字段
+        $ac = new Blog;
+        $url = $ac->fetch('articles','img',$id);
+       
+        //判断有没有图片有就删除
+        if($url!==NULL)
+        {
+            $url = ltrim($url,'/');
+            if(is_file($url))
+                unlink($url);
+        }
+     
+        $stmt =  self::$pdo->prepare('DELETE FROM articles WHERE id = ?');
+        return $stmt->execute([$id]);         
+    
+    }
+    
+    //添加标签
+    public function tags($tags)
+    {
+    	$tagid = [];
+    	foreach($tags as $v){
+    		$stmt = self::$pdo->prepare('INSERT INTO tags(id,tags) VALUES(NULL,?)');
+       		$stmt->execute([$v]);
+       		//保存新插入标签的ID
+       		$tagid[] = self::$pdo->lastInsertId(); 
+    	}
+    	return $tagid;
+    	
     }
 
     //生成静态页

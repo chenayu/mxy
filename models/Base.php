@@ -23,6 +23,13 @@ class Base
         }
     }
 
+    public function fetch($table,$data,$id)
+    {
+        $stmt = self::$pdo->prepare("SELECT {$data} FROM {$table} WHERE id=?");
+        $stmt->execute([$id]);
+        return $blog =  $stmt->fetch(PDO::FETCH_COLUMN);
+    }
+
     // 开启事务
     public function startTrans()
     {

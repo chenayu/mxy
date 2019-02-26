@@ -23,8 +23,6 @@ class Category extends Base
    {   
        $stmt = self::$pdo->prepare('DELETE FROM types WHERE id = ?');
        return $stmt->execute([$id]);
-        
-      
    }
 }
 

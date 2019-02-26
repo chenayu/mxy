@@ -34,10 +34,10 @@ class CategoryController
     public function delete($id='')
     {
     	if(!empty($id)){
-    		 $del = new Category;
-    		 
+
 	        if(!isset($_SESSIION['id']))
 	        {
+                $del = new Category;
 	            $data = $del->delete($id);
 	        }
     	}
