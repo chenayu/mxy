@@ -30,6 +30,13 @@ class Base
         return $blog =  $stmt->fetch(PDO::FETCH_COLUMN);
     }
 
+    public function deletes($table,$id,$tj='id')
+    {
+        $stmt =  self::$pdo->prepare("DELETE FROM {$table} WHERE {$tj} = ?");
+        return $stmt->execute([$id]); 
+        // var_dump($stmt->errorInfo());
+    }
+
     // 开启事务
     public function startTrans()
     {

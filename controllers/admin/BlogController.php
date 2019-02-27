@@ -9,8 +9,19 @@ class BlogController
     public function index()
     {
         $data = new Blog;
-        $d = $data->index();
-        view('admin.blog.index',['data'=>$d]);
+		$d = $data->index();
+		$datas = [];
+		foreach($d as $v)
+		{
+			echo '<pre>';
+			 //根据文章id找出标签添加到数组
+			$tags = $data->tages($v['id']);
+			$v['tags'] = $tags;
+			$datas[]=$v;
+		}
+		// var_dump($datas);
+		// exit;
+        view('admin.blog.index',['data'=>$datas]);
 
     }
 
@@ -27,25 +38,26 @@ class BlogController
 		$content = $_POST['content'];
 		$show = $_POST['is_show'];
 		$top = isset($_POST['top']) ? $_POST['top'] : 0;
-        $tags = isset($_POST['tags']) ? $_POST['tags'] : '';
+		$tags = isset($_POST['tags']) && $_POST['tags']!=',' ? $_POST['tags'] : '';
+		 
         //上传图片
         $img = $this->uploads();   
-        $add = new Blog;
-        //添加标签判断是否为空
+		$add = new Blog;
+		
+		//判断是否上传图片
+		$imgurl = $img[1] ? $img[0] : NULL; 
+		 
+		$id = $add->insert($type,$title,$content,$show,$top,$imgurl);
+		
+		//添加标签判断是否为空
 		if(!empty($tags))
 		{
 			$tags = trim($tags,','); //去掉首尾逗号
 			$arr = explode(',',$tags);
-			$tagsid = $add->tags($arr);  //返回的是标签的id
+			$tagsid = $add->tags($arr,$id);  //返回的是标签的id
         }
-        
-        //判断是否上传图片
-        $imgurl = $img[1] ? $img[0] : NULL; 
-		
-		//把数组里的id转成字符串用，号隔开
-		$tagsid = implode(',',$tagsid);
-		 
-		$st = $add->insert($type,$title,$content,$show,$top,$imgurl,$tagsid);
+  
+		exit;
 		
         message($st ? '添加成功' : '添加失败', 2, '/admin/blog/create');
 		
@@ -62,7 +74,7 @@ class BlogController
 			   $data = $del->delete($id);
 		   }
 	   }
-	   			  
+
 	   message($data ? '删除成功' : '删除失败', 2, '/admin/blog/index');
 	}
     
@@ -96,7 +108,7 @@ class BlogController
 			echo json_encode([
 				'success'=>$st,
 				'msg'=>'上传失败',  //如果上面为false 就显示这句话
-				'file_path'=>'/public/uploads/'.$name.'.php'  //上传成功保存在数据库的路径如果上传失败就没有这一项
+				'file_path'=>'/public/uploads/'.$name.'.php'  //上传失败就没有这一项
 			]);
 			
 			$url = '/uploads/'.$date.'/' . $name;

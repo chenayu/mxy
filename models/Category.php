@@ -13,7 +13,7 @@ class Category extends Base
    //取出分类
    public function categorydata()
    {
-       $stmt = self::$pdo->prepare('SELECT id,cat_name FROM types');
+       $stmt = self::$pdo->prepare('SELECT count(*) as sum,a.* FROM types a inner join articles b on a.id = b.type_id group by b.type_id;');
        $stmt->execute();
        return $stmt->fetchAll(PDO::FETCH_ASSOC);
    }

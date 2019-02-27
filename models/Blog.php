@@ -16,18 +16,27 @@ class Blog extends Base
        return $blog = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function tages($id)
+    {
+        $stmt = self::$pdo->prepare('SELECT c.* FROM articles a left join article_tags b on a.id = b.article_id left join tags c on b.tags_id = c.id where b.article_id =?');
+        $stmt->execute([$id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     //添加
-    public function insert($type,$title,$content,$is_show,$top,$img,$tagsid)
+    public function insert($type,$title,$content,$is_show,$top,$img)
     {
      $stmt = self::$pdo->prepare('INSERT INTO 
-        articles(title,content,created_at,updated_at,is_show,type_id,top,img,tags_id) 
-        VALUES(?,?,now(),now(),?,?,?,?,?)');
+        articles(title,content,created_at,updated_at,is_show,type_id,top,img) 
+        VALUES(?,?,now(),now(),?,?,?,?)');
      $st = $stmt->execute([
-         $title,$content,$is_show,$type,$top,$img,$tagsid
+         $title,$content,$is_show,$type,$top,$img
      ]);
 
+   
+
      if($st){
-        return true;
+        return self::$pdo->lastInsertId();
      }else{
          //打印错误
         var_dump($stmt->errorInfo());
@@ -51,23 +60,37 @@ class Blog extends Base
             if(is_file($url))
                 unlink($url);
         }
-     
-        $stmt =  self::$pdo->prepare('DELETE FROM articles WHERE id = ?');
-        return $stmt->execute([$id]);         
+        
+        $st = $ac->deletes('articles',$id);
+       
+        if($st){
+            return $ac->deletes('article_tags',$id,'article_id');
+        }else{
+            return false;
+        }
+        
     
     }
     
     //添加标签
-    public function tags($tags)
+    public function tags($tags,$id)
     {
-    	$tagid = [];
     	foreach($tags as $v){
     		$stmt = self::$pdo->prepare('INSERT INTO tags(id,tags) VALUES(NULL,?)');
-       		$stmt->execute([$v]);
+       		$st = $stmt->execute([$v]);
        		//保存新插入标签的ID
-       		$tagid[] = self::$pdo->lastInsertId(); 
+            $tagid = self::$pdo->lastInsertId(); 
+            
+            //判断是否保存标签成功
+            if($st)
+            {
+                //把保存的标签id和文章id放入关联表
+                $addtag = self::$pdo->prepare('INSERT INTO article_tags(article_id,tags_id) VALUES(?,?)');
+                $st2 = $addtag->execute([$id,$tagid]);
+            }
+            
     	}
-    	return $tagid;
+    	return $st2;
     	
     }
 
