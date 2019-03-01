@@ -66,4 +66,47 @@ function message($message, $type, $url, $seconds = 5)
         redirect($url);
     }
 }
+
+
+// 获取当前 URL 上所有的参数，并且还能排除掉某些参数
+// 参数：要排除的变量
+function getUrlParams($except = [])
+{
+    // ['odby','odway']
+    // 循环删除变量
+    foreach($except as $v)
+    {
+        unset($_GET[$v]);
+
+        // unset($_GET['odby']);
+        // unset($_GET['odway']);
+    }
+    // unset($_GET['page']);
+    /*
+    $_GET['keyword'] = 'xzb';
+    $_GET['is_show] = 1
+
+    // 拼出：  keyword=abc&is_show=1
+    */
+
+    $str = '';
+    foreach($_GET as $k => $v)
+    {
+        $str .= "$k=$v&";
+    }
+
+    return $str;
+}
+
+function page($n)
+{
+    $page = $_GET['page'];
+    if($n == 's')
+    {
+       return $page-1;
+    }else{
+       return $page+1;
+    }
+
+}
 ?>

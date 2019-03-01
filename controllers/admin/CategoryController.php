@@ -44,5 +44,6 @@ class CategoryController
                
         message($data ? '删除成功' : '删除失败', 2, '/admin/category/index');
     }
+
 }
 ?>

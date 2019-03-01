@@ -47,18 +47,17 @@ class BlogController
 		//判断是否上传图片
 		$imgurl = $img[1] ? $img[0] : NULL; 
 		 
+		//添加文章返回刚文章的id
 		$id = $add->insert($type,$title,$content,$show,$top,$imgurl);
 		
 		//添加标签判断是否为空
 		if(!empty($tags))
 		{
 			$tags = trim($tags,','); //去掉首尾逗号
-			$arr = explode(',',$tags);
+			$arr = explode(',',$tags); //把标签字符串以,转成数组
 			$tagsid = $add->tags($arr,$id);  //返回的是标签的id
         }
   
-		exit;
-		
         message($st ? '添加成功' : '添加失败', 2, '/admin/blog/create');
 		
 	}
@@ -77,7 +76,8 @@ class BlogController
 
 	   message($data ? '删除成功' : '删除失败', 2, '/admin/blog/index');
 	}
-    
+	
+	//上传图片
     public function uploads()
     {
     		$img = $_FILES['img'];

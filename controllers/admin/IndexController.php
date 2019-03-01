@@ -5,8 +5,6 @@ class IndexController
 {
     public function index()
     {
-        
-  
         view('admin.index.index');
     }
 }
